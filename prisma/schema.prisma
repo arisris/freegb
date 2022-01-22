@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id              Int                   @id @default(autoincrement())
+  name            String
+  email           String                @unique
+  emailVerifiedAt DateTime?
+  password        String
+  avatar          String?
+  role            Int                   @default(1)
+  sites           Sites[]
+  postsComments   SitePostsComments[]
+  tokens          PersonalAccessToken[]
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@map("users")
+}
+
+model PersonalAccessToken {
+  id        Int       @id @default(autoincrement())
+  user      Users?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?
+  name      String
+  token     String    @unique
+  abilities String?
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("personal_access_token")
+}
+
+model Sites {
+  id               Int                   @id @default(autoincrement())
+  user             Users                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int
+  siteCategories   SiteCategories?       @relation(fields: [siteCategoriesId], references: [id])
+  siteCategoriesId Int?
+  name             String
+  slug             String                @unique
+  description      String
+  domains          SiteDomains[]
+  posts            SitePosts[]
+  postsCategories  SitePostsCategories[]
+  postsTags        SitePostsTags[]
+  postsComments    SitePostsComments[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@map("sites")
+}
+
+model SiteCategories {
+  id          Int     @id @default(autoincrement())
+  sites       Sites[]
+  name        String
+  description String?
+  icon        String?
+
+  @@map("site_categories")
+}
+
+model SitePosts {
+  id            Int                   @id @default(autoincrement())
+  site          Sites                 @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId        Int
+  name          String
+  postBody      String?
+  tags          SitePostsTags[]       @relation("relation_site_posts_to_site_posts_tags")
+  categories    SitePostsCategories[] @relation("relation_site_posts_to_site_posts_categories")
+  postsComments SitePostsComments[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@map("site_posts")
+}
+
+model SiteDomains {
+  id        Int      @id @default(autoincrement())
+  site      Sites    @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId    Int
+  name      String
+  isMain    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_domains")
+}
+
+model SitePostsCategories {
+  id          Int         @id @default(autoincrement())
+  site        Sites       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      Int
+  name        String
+  description String?
+  icon        String?
+  posts       SitePosts[] @relation("relation_site_posts_to_site_posts_categories")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("site_posts_categories")
+}
+
+model SitePostsTags {
+  id          Int         @id @default(autoincrement())
+  site        Sites       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId      Int
+  name        String
+  description String?
+  posts       SitePosts[] @relation("relation_site_posts_to_site_posts_tags")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("site_posts_tags")
+}
+
+model SitePostsComments {
+  id              Int                 @id @default(autoincrement())
+  user            Users?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int?
+  site            Sites               @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId          Int
+  post            SitePosts           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId          Int
+  parentComment   SitePostsComments?  @relation("relation_site_posts_comments_to_site_posts_comments", fields: [parentCommentId], references: [id])
+  parentCommentId Int?
+  commentReplies  SitePostsComments[] @relation("relation_site_posts_comments_to_site_posts_comments")
+  commentBody     String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@map("site_posts_comments")
+}

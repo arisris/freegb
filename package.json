@@ -1,0 +1,71 @@
+{
+  "name": "freegb",
+  "version": "1.0.0",
+  "description": "My expreiment using next.js",
+  "main": "index.js",
+  "keywords": [
+    "Vercel",
+    "Jamstack",
+    "Serverless",
+    "Next.js"
+  ],
+  "author": "Aris Riswanto",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arisris/freegb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arisris/freegb/issues"
+  },
+  "homepage": "https://github.com/arisris/freegb#readme",
+  "scripts": {
+    "start": "next start",
+    "dev": "next dev",
+    "build": "next build",
+    "export": "next export"
+  },
+  "prisma": {
+    "seed": "ts-node -T ./prisma/seed.ts"
+  },
+  "dependencies": {
+    "@arisris/next-api-router": "^1.0.8",
+    "@headlessui/react": "^1.4.2",
+    "@prisma/client": "^3.7.0",
+    "ahooks": "^2.10.12",
+    "bcryptjs": "^2.4.3",
+    "clsx": "^1.1.1",
+    "http-json-errors": "^1.2.11",
+    "jwt-simple": "^0.5.6",
+    "konsta": "^0.7.0",
+    "next": "^12.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^7.19.1",
+    "react-icons": "^4.3.1",
+    "storeon": "^3.1.4",
+    "validator": "^13.7.0",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.3.4",
+    "@tailwindcss/typography": "^0.4.1",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/faker": "^5.5.9",
+    "@types/react": "^17.0.38",
+    "autoprefixer": "^10.2.5",
+    "faker": "^5.5.3",
+    "postcss": "^8.2.10",
+    "prettier": "^2.5.1",
+    "prisma": "^3.7.0",
+    "tailwindcss": "^2.1.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "none"
+  }
+}
