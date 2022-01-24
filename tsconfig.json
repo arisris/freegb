@@ -27,20 +27,19 @@
       "@/libs/*": [
         "libs/*"
       ],
-      "@/storeon/*": [
-        "storeon/*"
-      ],
       "@/styles/*": [
         "styles/*"
       ]
     },
     "typeRoots": [
+      "./types",
       "./node_modules/@types"
     ],
   },
   "exclude": [
     "dist",
     ".next",
+    ".bak",
     "styles",
     "out",
     "node_modules",
@@ -55,7 +54,6 @@
   ],
   "include": [
     "next-env.d.ts",
-    "global.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ]

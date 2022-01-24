@@ -17,8 +17,9 @@ model Users {
   emailVerifiedAt DateTime?
   password        String
   avatar          String?
-  role            Int                   @default(1)
   sites           Sites[]
+  roles           Roles[]
+  permissions     Permissions[]
   postsComments   SitePostsComments[]
   tokens          PersonalAccessToken[]
   createdAt       DateTime              @default(now())
@@ -27,9 +28,33 @@ model Users {
   @@map("users")
 }
 
+model Roles {
+  id          Int           @id @default(autoincrement())
+  slug        String        @unique
+  name        String
+  permissions Permissions[]
+  users       Users[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("roles")
+}
+
+model Permissions {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  name      String
+  roles     Roles[]
+  users     Users[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("permissions")
+}
+
 model PersonalAccessToken {
   id        Int       @id @default(autoincrement())
-  user      Users?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      Users?    @relation(fields: [userId], references: [id])
   userId    Int?
   name      String
   token     String    @unique
@@ -43,7 +68,7 @@ model PersonalAccessToken {
 
 model Sites {
   id               Int                   @id @default(autoincrement())
-  user             Users                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             Users                 @relation(fields: [userId], references: [id])
   userId           Int
   siteCategories   SiteCategories?       @relation(fields: [siteCategoriesId], references: [id])
   siteCategoriesId Int?
@@ -73,12 +98,12 @@ model SiteCategories {
 
 model SitePosts {
   id            Int                   @id @default(autoincrement())
-  site          Sites                 @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  site          Sites                 @relation(fields: [siteId], references: [id])
   siteId        Int
   name          String
   postBody      String?
-  tags          SitePostsTags[]       @relation("relation_site_posts_to_site_posts_tags")
-  categories    SitePostsCategories[] @relation("relation_site_posts_to_site_posts_categories")
+  tags          SitePostsTags[]
+  categories    SitePostsCategories[]
   postsComments SitePostsComments[]
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
@@ -88,7 +113,7 @@ model SitePosts {
 
 model SiteDomains {
   id        Int      @id @default(autoincrement())
-  site      Sites    @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  site      Sites    @relation(fields: [siteId], references: [id])
   siteId    Int
   name      String
   isMain    Boolean  @default(false)
@@ -100,12 +125,12 @@ model SiteDomains {
 
 model SitePostsCategories {
   id          Int         @id @default(autoincrement())
-  site        Sites       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  site        Sites       @relation(fields: [siteId], references: [id])
   siteId      Int
   name        String
   description String?
   icon        String?
-  posts       SitePosts[] @relation("relation_site_posts_to_site_posts_categories")
+  posts       SitePosts[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -114,11 +139,11 @@ model SitePostsCategories {
 
 model SitePostsTags {
   id          Int         @id @default(autoincrement())
-  site        Sites       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  site        Sites       @relation(fields: [siteId], references: [id])
   siteId      Int
   name        String
   description String?
-  posts       SitePosts[] @relation("relation_site_posts_to_site_posts_tags")
+  posts       SitePosts[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -126,19 +151,19 @@ model SitePostsTags {
 }
 
 model SitePostsComments {
-  id              Int                 @id @default(autoincrement())
-  user            Users?              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          Int?
-  site            Sites               @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  siteId          Int
-  post            SitePosts           @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId          Int
-  parentComment   SitePostsComments?  @relation("relation_site_posts_comments_to_site_posts_comments", fields: [parentCommentId], references: [id])
-  parentCommentId Int?
-  commentReplies  SitePostsComments[] @relation("relation_site_posts_comments_to_site_posts_comments")
-  commentBody     String
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  id                  Int                 @id @default(autoincrement())
+  user                Users?              @relation(fields: [userId], references: [id])
+  userId              Int?
+  site                Sites               @relation(fields: [siteId], references: [id])
+  siteId              Int
+  post                SitePosts           @relation(fields: [postId], references: [id])
+  postId              Int
+  replies             SitePostsComments[] @relation("SitePostsCommentsToSitePostsComments")
+  sitePostsComments   SitePostsComments?  @relation("SitePostsCommentsToSitePostsComments", fields: [sitePostsCommentsId], references: [id])
+  sitePostsCommentsId Int?
+  commentBody         String
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
   @@map("site_posts_comments")
 }

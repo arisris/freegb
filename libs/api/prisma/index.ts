@@ -9,5 +9,8 @@ if (process.env.NODE_ENV === "production") {
   }
   prisma = global.prisma;
 }
+let userExtend = Object.assign(prisma.users, {
+
+});
 
 export default prisma;
