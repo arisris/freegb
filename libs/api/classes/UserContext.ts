@@ -14,13 +14,13 @@ export class UserContext {
       !!this.#user && !!this.#user.roles.some((role) => role.name === name)
     );
   }
-  assignRoleTo(name: string) {}
+  // assignRoleTo(name: string) {}
 
-  hasPermission(...values: string[]) {}
-  givePermissionTo(...values: string[]) {}
+  // hasPermission(...values: string[]) {}
+  // givePermissionTo(...values: string[]) {}
 
-  can(...values: string[]) {}
-  cant(...values: string[]) {}
+  // can(...values: string[]) {}
+  // cant(...values: string[]) {}
 
   getSession() {
     return this.userSession;

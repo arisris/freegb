@@ -1,7 +1,6 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@arisris/next-api-router': ^1.0.8
   '@headlessui/react': ^1.4.2
   '@prisma/client': ^3.7.0
   '@tailwindcss/forms': ^0.3.4
@@ -12,16 +11,19 @@ specifiers:
   '@trpc/server': ^9.17.0
   '@types/bcryptjs': ^2.4.2
   '@types/faker': ^5.5.9
+  '@types/node': ^17.0.12
   '@types/react': ^17.0.38
   ahooks: ^2.10.12
   autoprefixer: ^10.2.5
   bcryptjs: ^2.4.3
   clsx: ^1.1.1
   faker: ^5.5.3
-  http-json-errors: ^1.2.11
+  good-storage: ^1.1.1
+  js-cookie: ^3.0.1
   jwt-simple: ^0.5.6
   konsta: ^0.7.0
   next: ^12.0.1
+  node-cache: ^5.1.2
   postcss: ^8.2.10
   prettier: ^2.5.1
   prisma: ^3.7.0
@@ -39,7 +41,6 @@ specifiers:
   yup: ^0.32.11
 
 dependencies:
-  '@arisris/next-api-router': 1.0.8
   '@headlessui/react': 1.4.3_react-dom@17.0.2+react@17.0.2
   '@prisma/client': 3.8.1_prisma@3.8.1
   '@trpc/client': 9.17.0_@trpc+server@9.17.0
@@ -49,10 +50,12 @@ dependencies:
   ahooks: 2.10.14_react@17.0.2
   bcryptjs: 2.4.3
   clsx: 1.1.1
-  http-json-errors: 1.2.11
+  good-storage: 1.1.1
+  js-cookie: 3.0.1
   jwt-simple: 0.5.6
   konsta: 0.7.0
   next: 12.0.8_react-dom@17.0.2+react@17.0.2
+  node-cache: 5.1.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-hook-form: 7.24.1_react@17.0.2
@@ -68,6 +71,7 @@ devDependencies:
   '@tailwindcss/typography': 0.4.1_tailwindcss@2.2.19
   '@types/bcryptjs': 2.4.2
   '@types/faker': 5.5.9
+  '@types/node': 17.0.12
   '@types/react': 17.0.38
   autoprefixer: 10.4.2_postcss@8.4.5
   faker: 5.5.3
@@ -75,7 +79,7 @@ devDependencies:
   prettier: 2.5.1
   prisma: 3.8.1
   tailwindcss: 2.2.19_f98f8cb1d4c2734d9765edb689db6e16
-  ts-node: 10.4.0_typescript@4.5.4
+  ts-node: 10.4.0_d1cd9e444d97299277ce58dde8c441da
   typescript: 4.5.4
 
 packages:
@@ -88,10 +92,6 @@ packages:
       lodash.debounce: 4.0.8
       lodash.throttle: 4.1.1
       react: 17.0.2
-    dev: false
-
-  /@arisris/next-api-router/1.0.8:
-    resolution: {integrity: sha512-Q4N+FqsCj8atA6BiwVITO7EhjjWKm4RpXVUxMJIxQbrgWKJENOk8SDBIBQbpD9t9ABgGIjDXkaWCcWD/KFOQcw==}
     dev: false
 
   /@babel/code-frame/7.16.7:
@@ -432,9 +432,8 @@ packages:
     resolution: {integrity: sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==}
     dev: false
 
-  /@types/node/17.0.10:
-    resolution: {integrity: sha512-S/3xB4KzyFxYGCppyDt68yzBU9ysL88lSdIah4D6cptdcltc4NCPCAMc0+PCpg/lLIyC7IPvj2Z52OJWeIUkog==}
-    dev: false
+  /@types/node/17.0.12:
+    resolution: {integrity: sha512-4YpbAsnJXWYK/fpTVFlMIcUIho2AYCi4wg5aNPrG1ng7fn/1/RZfCIpRCiBX+12RVa34RluilnvCqD+g3KiSiA==}
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -659,6 +658,11 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /clone/2.1.2:
+    resolution: {integrity: sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=}
+    engines: {node: '>=0.8'}
+    dev: false
 
   /clsx/1.1.1:
     resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
@@ -903,6 +907,10 @@ packages:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
+  /good-storage/1.1.1:
+    resolution: {integrity: sha512-+0UEpRT03fJgEJoeTVVz41ISC5+jaQrDIWatQ4BoDQfOiBBsjNanymi9sAtLFdEAADQN0FYR8mGpeqxSCe8oXQ==}
+    dev: false
+
   /graceful-fs/4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
     dev: true
@@ -939,10 +947,6 @@ packages:
     resolution: {integrity: sha512-1qYz89hW3lFDEazhjW0yVAV87lw8lVkrJocr72XmBkMKsoSVJCQx3W8BXsC7hO2qAt8BoVjYjtAcZ9perqGnNg==}
     engines: {node: '>=8'}
     dev: true
-
-  /http-json-errors/1.2.11:
-    resolution: {integrity: sha512-zjpbfjrmrmlx1TNYeF2wCW8Hs9428rQ7eVuqOuxCFW/hfGLAyypyCPUEvgSFJ4iyx6/3oo3Fh8+gMSlml3C68w==}
-    dev: false
 
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -1018,13 +1022,18 @@ packages:
     resolution: {integrity: sha512-mk0umAQ5lT+CaOJ+Qp01N6kz48sJG2kr2n1rX0koqKf6FIygQV0qLOdN9SCYID4IVeSigDOcPeGLozdMLYfb5g==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
-      '@types/node': 17.0.10
+      '@types/node': 17.0.12
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
 
   /js-cookie/2.2.1:
     resolution: {integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==}
+    dev: false
+
+  /js-cookie/3.0.1:
+    resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
+    engines: {node: '>=12'}
     dev: false
 
   /js-sha3/0.8.0:
@@ -1248,6 +1257,13 @@ packages:
       - webpack
     dev: false
 
+  /node-cache/5.1.2:
+    resolution: {integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      clone: 2.1.2
+    dev: false
+
   /node-emoji/1.11.0:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
     dependencies:
@@ -1349,7 +1365,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.0.4
-      ts-node: 10.4.0_typescript@4.5.4
+      ts-node: 10.4.0_d1cd9e444d97299277ce58dde8c441da
       yaml: 1.10.2
     dev: true
 
@@ -1797,7 +1813,7 @@ packages:
     resolution: {integrity: sha1-riF2gXXRVZ1IvvNUILL0li8JwzA=}
     dev: false
 
-  /ts-node/10.4.0_typescript@4.5.4:
+  /ts-node/10.4.0_d1cd9e444d97299277ce58dde8c441da:
     resolution: {integrity: sha512-g0FlPvvCXSIO1JDF6S232P5jPYqBkRL9qly81ZgAOSU7rwI0stphCgd2kLiCrU9DjQCrJMWEqcNSjQL02s6d8A==}
     hasBin: true
     peerDependencies:
@@ -1816,6 +1832,7 @@ packages:
       '@tsconfig/node12': 1.0.9
       '@tsconfig/node14': 1.0.1
       '@tsconfig/node16': 1.0.2
+      '@types/node': 17.0.12
       acorn: 8.7.0
       acorn-walk: 8.2.0
       arg: 4.1.3

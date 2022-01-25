@@ -5,6 +5,8 @@ import * as trpcNext from "@trpc/server/adapters/next";
 import { appRouter } from "@/libs/api/routers";
 import { createContext } from "@/libs/api/context";
 
+
+
 export default trpcNext.createNextApiHandler({
   
   router: appRouter,
@@ -20,7 +22,6 @@ export default trpcNext.createNextApiHandler({
       // send to bug reporting
       // console.error("Something went wrong", error);
     }
-    //console.error(error)
   },
   /**
    * Enable query batching

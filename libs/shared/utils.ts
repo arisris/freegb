@@ -131,4 +131,6 @@ export function timeAgo(
   }${plural} ago`;
 }
 
+export const isBrowser = typeof window !== "undefined" && window.navigator;
+
 export const noop = () => {};

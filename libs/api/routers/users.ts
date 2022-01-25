@@ -107,9 +107,10 @@ export const userRouter = createRouter()
   })
   .query("me", {
     async resolve({ ctx }) {
+      //console.log(ctx.req.headers["x-ssr"])
       let currentUser = ctx.user.getSession();
       //return { hello: "World"}
-      if (!currentUser) throw new TRPCError({ code: "UNAUTHORIZED" });
+      if (!currentUser) return null;
       let user = await ctx.prisma.users.findUnique({
         where: { id: currentUser.id },
         select: {

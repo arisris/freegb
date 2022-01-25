@@ -1,6 +1,7 @@
 import { ucWords } from "../../libs/shared/utils";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+import faker from "faker";
 
 const roles = ["user", "moderator", "admin"];
 const permissions = [
@@ -58,4 +59,20 @@ export default async (prisma: PrismaClient) => {
       }
     }
   });
+  for (let i = 0; i < 10; i++) {
+    await prisma.users.create({
+      data: {
+        name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+        email: faker.internet.exampleEmail(),
+        emailVerifiedAt: new Date(),
+        password: await hash("password123", 10),
+        avatar: `https://i.pravatar.cc/150?u=${faker.datatype.uuid()}`,
+        roles: {
+          connect: {
+            slug: "user"
+          }
+        }
+      }
+    });
+  }
 };
