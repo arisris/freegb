@@ -6,9 +6,9 @@ import { QueryClientProvider } from "react-query";
 import { StoreContext } from "storeon/react";
 import { App as KonstaApp } from "konsta/react";
 import "@/styles/tailwind.css";
+import { authSetCurrentUser } from "@/libs/client/store/actions";
 
 export default function App(props: AppProps) {
-  const refetch = useState(false);
   const queryClient = useMemo(
     () => createQueryClient(),
     [store.get()?.auth?.token]
@@ -17,9 +17,20 @@ export default function App(props: AppProps) {
     () => createTrpcClient(),
     [store.get()?.auth?.token]
   );
-
+  const refetch = useState(false);
   useEffect(() => {
-    let tid: NodeJS.Timeout;
+    let tid: NodeJS.Timer;
+    const checking = () => {
+      tid = setInterval(() => {
+        /** let check token are still valid every 10sec in background **/
+        if (
+          store.get()?.auth?.token?.exp &&
+          Date.now() > Number(store.get()?.auth?.token?.exp) * 1000
+        ) {
+          refetch[1](!refetch[0]);
+        }
+      }, 1000 * 10);
+    };
     trpcClient
       .query("users.me", null, {
         context: {
@@ -27,17 +38,14 @@ export default function App(props: AppProps) {
         }
       })
       .then((data) => {
-        store.dispatch("auth/setCurrentUser", data);
+        store.dispatch(authSetCurrentUser, data);
+        checking();
       })
       .catch((e) => {
         console.error("Some thing went wrong");
-      })
-      .finally(() => {
-        tid = setTimeout(() => {
-          refetch[1](!refetch[0]);
-        }, 1000 * 60); // refetching at one minute
+        checking();
       });
-    return () => tid && clearTimeout(tid);
+    return () => tid && clearInterval(tid);
   }, [store?.get()?.auth?.token, refetch[0]]);
 
   return (

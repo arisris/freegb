@@ -25,8 +25,9 @@ export const getAuthorizationHeader = () => {
 };
 export const createQueryClient = () => new QueryClient();
 export const createTrpcClient = () => {
+  const url = site_url("/api/trpc");
   return trpc.createClient({
-    url: site_url("/api/trpc"),
+    url,
     links: [
       // dont catch error in server bechause of console thrown
       function () {
@@ -51,8 +52,8 @@ export const createTrpcClient = () => {
         condition(op) {
           return op.context.skipBatchLink === true;
         },
-        true: httpLink({ url: site_url("/api/trpc") }),
-        false: httpBatchLink({ url: site_url("/api/trpc") })
+        true: httpLink({ url }),
+        false: httpBatchLink({ url })
       })
     ],
     transformer,
