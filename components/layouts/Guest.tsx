@@ -1,5 +1,6 @@
 import { Card, Preloader } from "konsta/react";
 import Head from "next/head";
+import Link from "next/link";
 
 export default function GuestLayout(props: {
   children: JSX.Element | JSX.Element[];
@@ -28,6 +29,11 @@ export default function GuestLayout(props: {
             props.children
           )}
         </Card>
+        <div>
+          <Link href="/">
+            <a className="text-primary text-sm">Back to home</a>
+          </Link>
+        </div>
       </div>
     </>
   );

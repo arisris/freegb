@@ -11,7 +11,7 @@ export class UserContext {
   constructor(private userSession: SessionUser | null = null) {}
   hasRole(name: string): boolean {
     return (
-      !!this.#user && !!this.#user.roles.some((role) => role.name === name)
+      !!this.#user && !!this.#user.roles.some((role) => role.slug === name)
     );
   }
   // assignRoleTo(name: string) {}

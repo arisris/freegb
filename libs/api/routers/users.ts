@@ -117,8 +117,8 @@ export const userRouter = createRouter()
           ...defaultUserSelect,
           email: true,
           emailVerifiedAt: true,
-          roles: { select: { id: true, name: true } },
-          permissions: { select: { id: true, name: true } }
+          roles: { select: { id: true, name: true, slug: true } },
+          permissions: { select: { id: true, name: true, slug: true } }
         }
       });
       return user;

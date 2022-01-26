@@ -7,12 +7,13 @@ import { Controller, useForm } from "react-hook-form";
 import { AuthTokenInput } from "@/libs/api/routers/auth";
 import { useStoreon } from "storeon/react";
 import { AppEvents, AppState } from "@/libs/client/store/types";
-import { setToken } from "@/libs/client/store/actions";
+import { authLogin } from "@/libs/client/store/actions";
 
 export default function PageLogin() {
-  const { dispatch, currentUser } = useStoreon<AppState, AppEvents>(
-    "currentUser"
-  );
+  const {
+    dispatch,
+    auth: { currentUser }
+  } = useStoreon<AppState, AppEvents>("auth");
   const authToken = trpc.useMutation("auth.token");
 
   const { handleSubmit, control, setError } = useForm<AuthTokenInput>();
@@ -23,7 +24,7 @@ export default function PageLogin() {
     authToken
       .mutateAsync(data)
       .then((i) => {
-        dispatch(setToken, i.token);
+        dispatch(authLogin, i);
         Router.reload();
       })
       .catch((e) => {

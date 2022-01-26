@@ -10,9 +10,15 @@ import { transformer, trpc } from "@/libs/client/trpc";
 import { getAccessTokenFromCookie, site_url } from "@/libs/api/utils";
 import store from "@/libs/client/store";
 import "@/styles/tailwind.css";
-import { AppEvents, AppState } from "@/libs/client/store/types";
-import { useEffect } from "react";
-import { setCurrentUser } from "@/libs/client/store/actions";
+import { useEffect, useState } from "react";
+import { authSetCurrentUser } from "@/libs/client/store/actions";
+
+const getAuthorizationHeader = () => {
+  let headers = {};
+  if (store.get()?.auth?.token?.token)
+    headers["Authorization"] = "JWT " + store.get()?.auth?.token?.token;
+  return headers;
+};
 
 function App({ Component, pageProps }: AppProps) {
   const me = trpc.useQuery(["users.me"], {
@@ -22,7 +28,7 @@ function App({ Component, pageProps }: AppProps) {
     }
   });
   useEffect(() => {
-    store.dispatch(setCurrentUser, me.data);
+    store.dispatch(authSetCurrentUser, me.data);
   }, [me.data]);
   return (
     <StoreContext.Provider value={store}>
@@ -32,21 +38,11 @@ function App({ Component, pageProps }: AppProps) {
     </StoreContext.Provider>
   );
 }
-const trpcApp = withTRPC<AppRouter>({
+export default withTRPC<AppRouter>({
   config({ ctx }) {
-    let token: string;
-    let headers = {};
-    // if (ctx?.req?.headers?.cookie) {
-    //   const token = getAccessTokenFromCookie(ctx?.req);
-    //   if (token) headers["Authorization"] = "Bearer " + token;
-    // }
-    if (process.browser) {
-      token = store.get().access_token;
-      if (token) headers["Authorization"] = "JWT " + token;
-    }
     return {
       headers: {
-        ...headers,
+        ...getAuthorizationHeader(),
         "x-ssr": "1"
       },
       queryClientConfig: {
@@ -97,5 +93,3 @@ const trpcApp = withTRPC<AppRouter>({
   //   return {};
   // }
 })(App);
-
-export default trpcApp;

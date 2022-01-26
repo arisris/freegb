@@ -18,10 +18,8 @@ model Users {
   emailVerifiedAt DateTime?
   password        String
   avatar          String?
-  sites           Sites[]
   roles           Roles[]
   permissions     Permissions[]
-  postsComments   SitePostsComments[]
   tokens          PersonalAccessToken[]
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
@@ -65,106 +63,4 @@ model PersonalAccessToken {
   updatedAt DateTime  @updatedAt
 
   @@map("personal_access_token")
-}
-
-model Sites {
-  id               Int                   @id @default(autoincrement())
-  user             Users                 @relation(fields: [userId], references: [id])
-  userId           Int
-  siteCategories   SiteCategories?       @relation(fields: [siteCategoriesId], references: [id])
-  siteCategoriesId Int?
-  name             String
-  slug             String                @unique
-  description      String
-  domains          SiteDomains[]
-  posts            SitePosts[]
-  postsCategories  SitePostsCategories[]
-  postsTags        SitePostsTags[]
-  postsComments    SitePostsComments[]
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-
-  @@map("sites")
-}
-
-model SiteCategories {
-  id          Int     @id @default(autoincrement())
-  sites       Sites[]
-  name        String
-  description String?
-  icon        String?
-
-  @@map("site_categories")
-}
-
-model SitePosts {
-  id            Int                   @id @default(autoincrement())
-  site          Sites                 @relation(fields: [siteId], references: [id])
-  siteId        Int
-  name          String
-  postBody      String?
-  tags          SitePostsTags[]
-  categories    SitePostsCategories[]
-  postsComments SitePostsComments[]
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-
-  @@map("site_posts")
-}
-
-model SiteDomains {
-  id        Int      @id @default(autoincrement())
-  site      Sites    @relation(fields: [siteId], references: [id])
-  siteId    Int
-  name      String
-  isMain    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("site_domains")
-}
-
-model SitePostsCategories {
-  id          Int         @id @default(autoincrement())
-  site        Sites       @relation(fields: [siteId], references: [id])
-  siteId      Int
-  name        String
-  description String?
-  icon        String?
-  posts       SitePosts[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  @@map("site_posts_categories")
-}
-
-model SitePostsTags {
-  id          Int         @id @default(autoincrement())
-  site        Sites       @relation(fields: [siteId], references: [id])
-  siteId      Int
-  name        String
-  description String?
-  posts       SitePosts[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  @@map("site_posts_tags")
-}
-
-model SitePostsComments {
-  id                  Int                 @id @default(autoincrement())
-  user                Users?              @relation(fields: [userId], references: [id])
-  userId              Int?
-  site                Sites               @relation(fields: [siteId], references: [id])
-  siteId              Int
-  post                SitePosts           @relation(fields: [postId], references: [id])
-  postId              Int
-  replies             SitePostsComments[] @relation("SitePostsCommentsToSitePostsComments")
-  sitePostsComments   SitePostsComments?  @relation("SitePostsCommentsToSitePostsComments", fields: [sitePostsCommentsId], references: [id])
-  sitePostsCommentsId Int?
-  commentBody         String
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
-
-  @@map("site_posts_comments")
 }
