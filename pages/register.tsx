@@ -1,10 +1,9 @@
 import GuestLayout from "@/components/layouts/Guest";
 import Router from "next/router";
-import { trpc } from "@/libs/client/trpc";
+import { inferMutationInput, trpc } from "@/libs/client/trpc";
 import { BlockTitle, Button, List, ListInput, Link } from "konsta/react";
 import { ChangeEvent, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AuthCreateInput } from "@/libs/api/routers/auth";
 import { useStoreon } from "storeon/react";
 import { AppEvents, AppState } from "@/libs/client/store/types";
 import { authLogin } from "@/libs/client/store/actions";
@@ -18,13 +17,13 @@ export default function PageRegister() {
   useEffect(() => {
     if (currentUser) Router.push("/");
   }, [currentUser]);
-  const { handleSubmit, setError, control } = useForm<AuthCreateInput>();
-  const onSubmit = (data: AuthCreateInput) => {
+  const { handleSubmit, setError, control } = useForm<inferMutationInput<"auth.create">>();
+  const onSubmit = (data: inferMutationInput<"auth.create">) => {
     authCreate
       .mutateAsync(data)
       .then((i) => {
         dispatch(authLogin, i);
-        Router.reload();
+        Router.push("/")
       })
       .catch((e) => {
         let v = e.data?.yupError;

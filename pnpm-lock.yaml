@@ -6,7 +6,6 @@ specifiers:
   '@tailwindcss/forms': ^0.3.4
   '@tailwindcss/typography': ^0.4.1
   '@trpc/client': ^9.17.0
-  '@trpc/next': ^9.17.0
   '@trpc/react': ^9.17.0
   '@trpc/server': ^9.17.0
   '@types/bcryptjs': ^2.4.2
@@ -19,7 +18,6 @@ specifiers:
   clsx: ^1.1.1
   faker: ^5.5.3
   good-storage: ^1.1.1
-  js-cookie: ^3.0.1
   jwt-simple: ^0.5.6
   konsta: ^0.7.0
   next: ^12.0.1
@@ -44,14 +42,12 @@ dependencies:
   '@headlessui/react': 1.4.3_react-dom@17.0.2+react@17.0.2
   '@prisma/client': 3.8.1_prisma@3.8.1
   '@trpc/client': 9.17.0_@trpc+server@9.17.0
-  '@trpc/next': 9.17.0_908665f53be5388a4756f8eeff4f9f2c
   '@trpc/react': 9.17.0_94d089fcd90bcb6c32d8cffe519897cb
   '@trpc/server': 9.17.0
   ahooks: 2.10.14_react@17.0.2
   bcryptjs: 2.4.3
   clsx: 1.1.1
   good-storage: 1.1.1
-  js-cookie: 3.0.1
   jwt-simple: 0.5.6
   konsta: 0.7.0
   next: 12.0.8_react-dom@17.0.2+react@17.0.2
@@ -353,28 +349,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.16.7
       '@trpc/server': 9.17.0
-    dev: false
-
-  /@trpc/next/9.17.0_908665f53be5388a4756f8eeff4f9f2c:
-    resolution: {integrity: sha512-YMkZo+V/ydxudJTJbjwUmJ4HJQ9hiCrhqDHGDG/OZdhTYA4RDgs5T7v7Ri1YAWiZBxsjh2zHoYlvnQ14k8E9dg==}
-    peerDependencies:
-      '@trpc/client': 9.17.0
-      '@trpc/react': 9.17.0
-      '@trpc/server': 9.17.0
-      next: '*'
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-      react-query: ^3.31.0 || ^4.0.0-alpha.4
-    dependencies:
-      '@babel/runtime': 7.16.7
-      '@trpc/client': 9.17.0_@trpc+server@9.17.0
-      '@trpc/react': 9.17.0_94d089fcd90bcb6c32d8cffe519897cb
-      '@trpc/server': 9.17.0
-      next: 12.0.8_react-dom@17.0.2+react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-query: 3.34.11_react-dom@17.0.2+react@17.0.2
-      react-ssr-prepass: 1.5.0_react@17.0.2
     dev: false
 
   /@trpc/react/9.17.0_94d089fcd90bcb6c32d8cffe519897cb:
@@ -1031,11 +1005,6 @@ packages:
     resolution: {integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==}
     dev: false
 
-  /js-cookie/3.0.1:
-    resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
-    engines: {node: '>=12'}
-    dev: false
-
   /js-sha3/0.8.0:
     resolution: {integrity: sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==}
     dev: false
@@ -1510,14 +1479,6 @@ packages:
   /react-refresh/0.8.3:
     resolution: {integrity: sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /react-ssr-prepass/1.5.0_react@17.0.2:
-    resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 17.0.2
     dev: false
 
   /react/17.0.2:

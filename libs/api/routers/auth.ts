@@ -1,29 +1,17 @@
 import { createRouter } from "../createRouter";
-import * as z from "yup";
+import { object, string, ref } from "yup";
 import { compare, hash } from "bcryptjs";
 import { TRPCError } from "@trpc/server";
 import jwt from "jwt-simple";
 
-const tokenInput = z.object({
-  email: z.string().email(),
-  password: z.string(),
-  device_name: z.string().notRequired().default("regular-login")
-});
-const authCreateInput = z.object({
-  name: z.string().required(),
-  email: z.string().email().required(),
-  password: z.string().min(6).max(32),
-  password_confirmation: z
-    .string()
-    .oneOf([z.ref("password"), null], "Password Is Not Match")
-});
-export type AuthTokenInput = z.InferType<typeof tokenInput>;
-export type AuthCreateInput = z.InferType<typeof authCreateInput>;
-
 export const authRouter = createRouter()
   .mutation("token", {
-    input: tokenInput,
-    async resolve({ ctx, input: { email, password, device_name } }) {
+    input: object({
+      email: string().email(),
+      password: string(),
+      device_name: string().notRequired().default("regular-login")
+    }),
+    async resolve({ ctx, input: { email, password } }) {
       let user = await ctx.prisma.users.findUnique({
         where: {
           email: email
@@ -48,7 +36,15 @@ export const authRouter = createRouter()
     }
   })
   .mutation("create", {
-    input: authCreateInput,
+    input: object({
+      name: string().required(),
+      email: string().email().required(),
+      password: string().min(6).max(32),
+      password_confirmation: string().oneOf(
+        [ref("password"), null],
+        "Password Is Not Match"
+      )
+    }),
     async resolve({ ctx, input }) {
       //console.log(ctx.user.getSession())
       if (!ctx.user.isGuest()) throw new TRPCError({ code: "FORBIDDEN" });

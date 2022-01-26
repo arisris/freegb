@@ -1,95 +1,54 @@
-import { AppRouter } from "@/libs/api/routers";
-import { withTRPC } from "@trpc/next";
-import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
-import { httpLink } from "@trpc/client/links/httpLink";
-import { splitLink } from "@trpc/client/links/splitLink";
+import store from "@/libs/client/store";
+import { createQueryClient, createTrpcClient, trpc } from "@/libs/client/trpc";
+import { AppProps } from "next/app";
+import { useEffect, useMemo, useState } from "react";
+import { QueryClientProvider } from "react-query";
 import { StoreContext } from "storeon/react";
 import { App as KonstaApp } from "konsta/react";
-import { AppProps } from "next/app";
-import { transformer, trpc } from "@/libs/client/trpc";
-import { getAccessTokenFromCookie, site_url } from "@/libs/api/utils";
-import store from "@/libs/client/store";
 import "@/styles/tailwind.css";
-import { useEffect, useState } from "react";
-import { authSetCurrentUser } from "@/libs/client/store/actions";
 
-const getAuthorizationHeader = () => {
-  let headers = {};
-  if (store.get()?.auth?.token?.token)
-    headers["Authorization"] = "JWT " + store.get()?.auth?.token?.token;
-  return headers;
-};
+export default function App(props: AppProps) {
+  const refetch = useState(false);
+  const queryClient = useMemo(
+    () => createQueryClient(),
+    [store.get()?.auth?.token]
+  );
+  const trpcClient = useMemo(
+    () => createTrpcClient(),
+    [store.get()?.auth?.token]
+  );
 
-function App({ Component, pageProps }: AppProps) {
-  const me = trpc.useQuery(["users.me"], {
-    refetchOnWindowFocus: false,
-    context: {
-      skipBatchLink: true
-    }
-  });
   useEffect(() => {
-    store.dispatch(authSetCurrentUser, me.data);
-  }, [me.data]);
+    let tid: NodeJS.Timeout;
+    trpcClient
+      .query("users.me", null, {
+        context: {
+          skipBatchLink: true
+        }
+      })
+      .then((data) => {
+        store.dispatch("auth/setCurrentUser", data);
+      })
+      .catch((e) => {
+        console.error("Some thing went wrong");
+      })
+      .finally(() => {
+        tid = setTimeout(() => {
+          refetch[1](!refetch[0]);
+        }, 1000 * 60); // refetching at one minute
+      });
+    return () => tid && clearTimeout(tid);
+  }, [store?.get()?.auth?.token, refetch[0]]);
+
   return (
     <StoreContext.Provider value={store}>
-      <KonstaApp theme="material" safeAreas={true}>
-        <Component {...pageProps} />
-      </KonstaApp>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <KonstaApp theme="material" safeAreas={true}>
+            <props.Component {...props.pageProps} />
+          </KonstaApp>
+        </QueryClientProvider>
+      </trpc.Provider>
     </StoreContext.Provider>
   );
 }
-export default withTRPC<AppRouter>({
-  config({ ctx }) {
-    return {
-      headers: {
-        ...getAuthorizationHeader(),
-        "x-ssr": "1"
-      },
-      queryClientConfig: {
-        defaultOptions: {
-          queries: {
-            retry: false
-          }
-        }
-      },
-      links: [
-        // dont catch error in server bechause of console thrown
-        () => {
-          return ({ prev, next, op }) => {
-            next(op, (result) => {
-              if (result instanceof Error) {
-                if (process.browser) return prev(result);
-                // send error object to
-                return prev({
-                  type: "data",
-                  data: {
-                    error: result.data
-                  }
-                });
-              }
-              //console.log(result)
-              prev(result);
-            });
-          };
-        },
-        splitLink({
-          condition(op) {
-            return op.context.skipBatchLink === true;
-          },
-          true: httpLink({ url: site_url("/api/trpc") }),
-          false: httpBatchLink({ url: site_url("/api/trpc") })
-        })
-      ],
-      transformer
-    };
-  },
-  ssr: false // togo SSR Implementation
-  // responseMeta({ clientErrors }) {
-  //   if (clientErrors.length) {
-  //     return {
-  //       status: clientErrors[0].data?.httpStatus ?? 500
-  //     };
-  //   }
-  //   return {};
-  // }
-})(App);

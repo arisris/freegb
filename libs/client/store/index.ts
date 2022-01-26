@@ -32,8 +32,8 @@ const app: StoreonModule<AppState, AppEvents> = (store) => {
     gs.remove(getTokenKey);
     if (value?.redirectTo) {
       let t = setTimeout(() => {
-        window.location.replace(value.redirectTo);
-        // Router.push(value.redirectTo);
+        //window.location.replace(value.redirectTo);
+        Router.push(value.redirectTo);
         clearTimeout(t);
       }, 100);
     }

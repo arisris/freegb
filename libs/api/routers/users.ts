@@ -1,5 +1,5 @@
 import { createRouter } from "../createRouter";
-import * as z from "yup";
+import { object, string, number } from "yup";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { hash } from "bcryptjs";
@@ -14,11 +14,11 @@ export const defaultUserSelect = Prisma.validator<Prisma.UsersSelect>()({
 
 export const userRouter = createRouter()
   .mutation("create", {
-    input: z.object({
-      name: z.string().required(),
-      email: z.string().email().required(),
-      avatar: z.string().url().optional(),
-      password: z.string().min(6).max(32).required()
+    input: object({
+      name: string().required(),
+      email: string().email().required(),
+      avatar: string().url().optional(),
+      password: string().min(6).max(32).required()
     }),
     async resolve({ ctx, input }) {
       if (!ctx.user.isAdmin())
@@ -42,13 +42,13 @@ export const userRouter = createRouter()
     }
   })
   .mutation("update", {
-    input: z.object({
-      id: z.number().required(),
-      input: z.object({
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        avatar: z.string().url().optional(),
-        password: z.string().min(6).max(32).optional()
+    input: object({
+      id: number().required(),
+      input: object({
+        name: string().optional(),
+        email: string().email().optional(),
+        avatar: string().url().optional(),
+        password: string().min(6).max(32).optional()
       })
     }),
     async resolve({ ctx, input: { id, input } }) {
@@ -75,8 +75,8 @@ export const userRouter = createRouter()
     }
   })
   .mutation("delete", {
-    input: z.object({
-      id: z.number().required()
+    input: object({
+      id: number().required()
     }),
     async resolve({ ctx, input: { id } }) {
       if (!ctx.user.isAdmin())
@@ -89,8 +89,8 @@ export const userRouter = createRouter()
     }
   })
   .query("byId", {
-    input: z.object({
-      id: z.number().required()
+    input: object({
+      id: number().required()
     }),
     async resolve({ ctx, input: { id } }) {
       let user = await ctx.prisma.users.findUnique({

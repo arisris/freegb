@@ -1,10 +1,9 @@
 import GuestLayout from "@/components/layouts/Guest";
 import Router from "next/router";
-import { trpc } from "@/libs/client/trpc";
+import { inferMutationInput, trpc } from "@/libs/client/trpc";
 import { BlockTitle, Button, List, ListInput, Link } from "konsta/react";
 import { ChangeEvent, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AuthTokenInput } from "@/libs/api/routers/auth";
 import { useStoreon } from "storeon/react";
 import { AppEvents, AppState } from "@/libs/client/store/types";
 import { authLogin } from "@/libs/client/store/actions";
@@ -16,16 +15,16 @@ export default function PageLogin() {
   } = useStoreon<AppState, AppEvents>("auth");
   const authToken = trpc.useMutation("auth.token");
 
-  const { handleSubmit, control, setError } = useForm<AuthTokenInput>();
+  const { handleSubmit, control, setError } = useForm<inferMutationInput<"auth.token">>();
   useEffect(() => {
     if (currentUser) Router.push("/");
   }, [currentUser]);
-  const onSubmit = (data: AuthTokenInput) => {
+  const onSubmit = (data: inferMutationInput<"auth.token">) => {
     authToken
       .mutateAsync(data)
       .then((i) => {
         dispatch(authLogin, i);
-        Router.reload();
+        Router.push("/")
       })
       .catch((e) => {
         let v = e.data?.yupError;
