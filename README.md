@@ -1,13 +1,10 @@
-## Nextjs based simple eCommerce
-Work in progress
+## Simple JWT Auth With TRPC prisma & next
+
+A sample JWT authentication using prisma, @trpc/server @trpc/client @trpc/react in Next.js
 
 ### Simple Usage
 
-Create mysql database in your local computer
-
 copy .env.example > .env
-
-edit .env and change DATABASE_URL
 
 In this case i use "pnpm" for now i'm not sure that with other package manager can work. so
 install "pnpm" first
@@ -19,27 +16,27 @@ $_ npm -g i pnpm
 Follow instruction
 
 ```bash
-$_ git clone https://github.com/arisris/next-toko.git
-$_ cd next-toko
+$_ git clone https://github.com/arisris/freegb.git
+$_ cd freegb
 $_ pnpm install
-$_ pnpm exec prisma migrate dev
-$_ pnpm exec prisma migrate reset
+$_ pnpm prisma migrate dev
+$_ pnpm prisma migrate reset
 $_ pnpm dev
 ```
 
 After this you already have some seed data in DATABASE
 
-Test login at http://localhost:3000/api/auth/signin
+Test login at http://localhost:3000/login
 
-user: admin
+email: admin@example.net
 password: password123
 
-GraphGL server located at http://localhost:3000/api/graphql
+Trpc server located at http://localhost:3000/api/trpc
 
 Thats it. Thankyou
 
 ### TODO
-Curently i'm working at graphql server api located at folder /nexus/
+?
 
 ### Links
 
