@@ -1,7 +1,7 @@
 import { createReactQueryHooks } from "@trpc/react";
 import superjson from "superjson";
 import type { inferProcedureOutput } from "@trpc/server";
-import type { AppRouter } from "../api/routers";
+import type { AppRouter } from "../api/appRouter";
 import type { Procedure } from "@trpc/server/dist/declarations/src/internals/procedure";
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { httpLink } from "@trpc/client/links/httpLink";
@@ -19,11 +19,17 @@ export const transformer = superjson;
 
 export const getAuthorizationHeader = () => {
   let headers = {};
-  if (store.get()?.auth?.token?.token)
-    headers["Authorization"] = "JWT " + store.get()?.auth?.token?.token;
+  if (store.get()?.access_token?.token)
+    headers["Authorization"] = "Bearer " + store.get()?.access_token?.token;
   return headers;
 };
-export const createQueryClient = () => new QueryClient();
+export const createQueryClient = () => new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    }
+  }
+});
 export const createTrpcClient = () => {
   const url = site_url("/api/trpc");
   return trpc.createClient({

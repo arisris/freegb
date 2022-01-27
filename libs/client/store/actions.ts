@@ -1,3 +1,1 @@
-export const authLogin = "auth/setLogin";
-export const authLogout = "auth/setLogout";
-export const authSetCurrentUser = "auth/setCurrentUser";
+export const setAccessToken = "access_token/set";

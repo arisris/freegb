@@ -1,8 +1,14 @@
-import { createRouter } from "../createRouter";
 import { object, string, number } from "yup";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { hash } from "bcryptjs";
+import { createRouter } from "@/libs/api/createRouter";
+import {
+  userRouterInputByIdSchema,
+  userRouterInputCreateSchema,
+  userRouterInputDeleteSchema,
+  userRouterInputUpdateSchema
+} from "./schema";
 
 export const defaultUserSelect = Prisma.validator<Prisma.UsersSelect>()({
   id: true,
@@ -14,12 +20,7 @@ export const defaultUserSelect = Prisma.validator<Prisma.UsersSelect>()({
 
 export const userRouter = createRouter()
   .mutation("create", {
-    input: object({
-      name: string().required(),
-      email: string().email().required(),
-      avatar: string().url().optional(),
-      password: string().min(6).max(32).required()
-    }),
+    input: userRouterInputCreateSchema,
     async resolve({ ctx, input }) {
       if (!ctx.user.isAdmin())
         throw new TRPCError({ code: "FORBIDDEN", message: "Not right roles" });
@@ -42,15 +43,7 @@ export const userRouter = createRouter()
     }
   })
   .mutation("update", {
-    input: object({
-      id: number().required(),
-      input: object({
-        name: string().optional(),
-        email: string().email().optional(),
-        avatar: string().url().optional(),
-        password: string().min(6).max(32).optional()
-      })
-    }),
+    input: userRouterInputUpdateSchema,
     async resolve({ ctx, input: { id, input } }) {
       if (!ctx.user.isAdmin())
         throw new TRPCError({ code: "FORBIDDEN", message: "Not right roles" });
@@ -75,9 +68,7 @@ export const userRouter = createRouter()
     }
   })
   .mutation("delete", {
-    input: object({
-      id: number().required()
-    }),
+    input: userRouterInputDeleteSchema,
     async resolve({ ctx, input: { id } }) {
       if (!ctx.user.isAdmin())
         throw new TRPCError({ code: "FORBIDDEN", message: "Not right roles" });
@@ -89,9 +80,7 @@ export const userRouter = createRouter()
     }
   })
   .query("byId", {
-    input: object({
-      id: number().required()
-    }),
+    input: userRouterInputByIdSchema,
     async resolve({ ctx, input: { id } }) {
       let user = await ctx.prisma.users.findUnique({
         where: { id },
@@ -107,19 +96,9 @@ export const userRouter = createRouter()
   })
   .query("me", {
     async resolve({ ctx }) {
-      let currentUser = ctx.user.getSession();
-      if (!currentUser) return null;
-      let user = await ctx.prisma.users.findUnique({
-        where: { id: currentUser.id },
-        select: {
-          ...defaultUserSelect,
-          email: true,
-          emailVerifiedAt: true,
-          roles: { select: { id: true, name: true, slug: true } },
-          permissions: { select: { id: true, name: true, slug: true } }
-        }
-      });
-      return user;
+      let currentUser = ctx.user.getUser();
+      if (!currentUser) throw new TRPCError({ code: "UNAUTHORIZED" });
+      return currentUser;
     }
   })
   .query("all", {

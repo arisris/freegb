@@ -1,13 +1,9 @@
-import { authLogout } from "@/libs/client/store/actions";
-import { AppEvents, AppState } from "@/libs/client/store/types";
+import useAuth from "@/libs/client/useAuth";
 import { Button } from "konsta/react";
 import { useRouter } from "next/router";
-import { useStoreon } from "storeon/react";
 export default function index() {
-  const {
-    auth: { currentUser },
-    dispatch
-  } = useStoreon<AppState, AppEvents>("auth");
+  const { user: currentUser, signOut } = useAuth();
+
   const router = useRouter();
   return (
     <div>
@@ -17,11 +13,7 @@ export default function index() {
           <pre>{JSON.stringify(currentUser, null, 2)}</pre>
           <br />
           <div className="w-48">
-            <Button
-              onClick={() => dispatch(authLogout, { redirectTo: "/login" })}
-            >
-              SignOut
-            </Button>
+            <Button onClick={() => signOut("/login")}>SignOut</Button>
           </div>
         </>
       ) : (

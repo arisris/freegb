@@ -22,9 +22,6 @@ export class UserContext {
   // can(...values: string[]) {}
   // cant(...values: string[]) {}
 
-  getSession() {
-    return this.userSession;
-  }
   getUser() {
     return this.#user;
   }
@@ -38,20 +35,24 @@ export class UserContext {
     return this.hasRole("user");
   }
   isGuest() {
-    return !this.userSession;
+    return !this.#user;
   }
   // initialize first
   async init() {
     if (!this.#user) {
       if (this.userSession) {
-        this.#user = await prisma.users.findUnique({
-          where: { id: this.userSession.id },
-          include: {
-            permissions: true,
-            roles: true
-          }
-        });
-        delete this.#user.password;
+        try {
+          this.#user = await prisma.users.findUnique({
+            where: { id: this.userSession.id },
+            include: {
+              permissions: true,
+              roles: true
+            }
+          });
+          delete this.#user.password;
+        } catch (e) {
+          this.#user = null;
+        }
       }
     }
   }

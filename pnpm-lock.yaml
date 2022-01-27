@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@headlessui/react': ^1.4.2
+  '@hookform/resolvers': ^2.8.8
   '@prisma/client': ^3.7.0
   '@tailwindcss/forms': ^0.3.4
   '@tailwindcss/typography': ^0.4.1
@@ -40,6 +41,7 @@ specifiers:
 
 dependencies:
   '@headlessui/react': 1.4.3_react-dom@17.0.2+react@17.0.2
+  '@hookform/resolvers': 2.8.8_react-hook-form@7.24.1
   '@prisma/client': 3.8.1_prisma@3.8.1
   '@trpc/client': 9.17.0_@trpc+server@9.17.0
   '@trpc/react': 9.17.0_94d089fcd90bcb6c32d8cffe519897cb
@@ -160,6 +162,14 @@ packages:
     dependencies:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /@hookform/resolvers/2.8.8_react-hook-form@7.24.1:
+    resolution: {integrity: sha512-meAEDur1IJBfKyTo9yPYAuzjIfrxA7m9Ov+1nxaW/YupsqMeseWifoUjWK03+hz/RJizsVQAaUjVxFEkyu0GWg==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.24.1_react@17.0.2
     dev: false
 
   /@next/env/12.0.8:

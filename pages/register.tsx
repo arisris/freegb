@@ -1,36 +1,30 @@
 import GuestLayout from "@/components/layouts/Guest";
 import Router from "next/router";
-import { inferMutationInput, trpc } from "@/libs/client/trpc";
+import useAuth from "@/libs/client/useAuth";
+import { inferMutationInput } from "@/libs/client/trpc";
 import { BlockTitle, Button, List, ListInput, Link } from "konsta/react";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useStoreon } from "storeon/react";
-import { AppEvents, AppState } from "@/libs/client/store/types";
-import { authLogin } from "@/libs/client/store/actions";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { authRouterInputCreateSchema } from "@/libs/entity/auth/schema";
 
 export default function PageRegister() {
-  const {
-    auth: { currentUser },
-    dispatch
-  } = useStoreon<AppState, AppEvents>("auth");
-  const authCreate = trpc.useMutation("auth.create");
-  useEffect(() => {
-    if (currentUser) Router.push("/");
-  }, [currentUser]);
-  const { handleSubmit, setError, control } = useForm<inferMutationInput<"auth.create">>();
+  const { signInUp } = useAuth({
+    middleware: "guest",
+    redirectIfAuthenticated: "/"
+  });
+  const { handleSubmit, setError, control } = useForm<
+    inferMutationInput<"auth.create">
+  >({
+    resolver: yupResolver(authRouterInputCreateSchema)
+  });
   const onSubmit = (data: inferMutationInput<"auth.create">) => {
-    authCreate
-      .mutateAsync(data)
-      .then((i) => {
-        dispatch(authLogin, i);
-        Router.push("/")
-      })
-      .catch((e) => {
-        let v = e.data?.yupError;
-        if (v) {
-          setError(v.path, { message: v.errors.join(" ") });
-        }
-      });
+    signInUp(data).catch((e) => {
+      let v = e.data?.yupError;
+      if (v) {
+        setError(v.path, { message: v.errors.join(" ") });
+      }
+    });
   };
   return (
     <GuestLayout
@@ -46,12 +40,6 @@ export default function PageRegister() {
           <Controller
             control={control}
             name="name"
-            rules={{
-              required: {
-                value: true,
-                message: "Please provide your name"
-              }
-            }}
             render={(f) => (
               <ListInput
                 floatingLabel
@@ -70,12 +58,6 @@ export default function PageRegister() {
           <Controller
             control={control}
             name="email"
-            rules={{
-              required: {
-                value: true,
-                message: "Email is required"
-              }
-            }}
             render={(f) => (
               <ListInput
                 floatingLabel

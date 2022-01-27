@@ -1,15 +1,9 @@
-import { inferMutationOutput, inferQueryOutput } from "../trpc";
-import { authLogin, authLogout, authSetCurrentUser } from "./actions";
+import { setAccessToken } from "./actions";
 
 export type AppState = {
-  auth: {
-    token: JWTResponse;
-    currentUser?: inferQueryOutput<"users.me">;
-  };
+  access_token: JWTResponse;
 };
 
 export type AppEvents = {
-  [authLogin]: inferMutationOutput<"auth.token" | "auth.create">;
-  [authLogout]?: undefined | { redirectTo?: string };
-  [authSetCurrentUser]?: inferQueryOutput<"users.me"> | null;
+  [setAccessToken]: JWTResponse | null
 };

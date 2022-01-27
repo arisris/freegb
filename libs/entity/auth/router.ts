@@ -1,16 +1,15 @@
-import { createRouter } from "../createRouter";
-import { object, string, ref } from "yup";
 import { compare, hash } from "bcryptjs";
 import { TRPCError } from "@trpc/server";
 import jwt from "jwt-simple";
+import { createRouter } from "@/libs/api/createRouter";
+import {
+  authRouterInputCreateSchema,
+  authRouterInputTokenSchema
+} from "./schema";
 
 export const authRouter = createRouter()
   .mutation("token", {
-    input: object({
-      email: string().email(),
-      password: string(),
-      device_name: string().notRequired().default("regular-login")
-    }),
+    input: authRouterInputTokenSchema,
     async resolve({ ctx, input: { email, password } }) {
       let user = await ctx.prisma.users.findUnique({
         where: {
@@ -36,17 +35,8 @@ export const authRouter = createRouter()
     }
   })
   .mutation("create", {
-    input: object({
-      name: string().required(),
-      email: string().email().required(),
-      password: string().min(6).max(32),
-      password_confirmation: string().oneOf(
-        [ref("password"), null],
-        "Password Is Not Match"
-      )
-    }),
+    input: authRouterInputCreateSchema,
     async resolve({ ctx, input }) {
-      //console.log(ctx.user.getSession())
       if (!ctx.user.isGuest()) throw new TRPCError({ code: "FORBIDDEN" });
       input.password = await hash(input.password, 10);
       delete input.password_confirmation;
