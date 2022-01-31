@@ -4,8 +4,9 @@ import { AppProps } from "next/app";
 import { useMemo } from "react";
 import { QueryClientProvider } from "react-query";
 import { StoreContext } from "storeon/react";
-import { App as KonstaApp } from "konsta/react";
-import "@/styles/tailwind.css";
+import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { NotificationsProvider } from "@mantine/notifications";
 
 export default function App(props: AppProps) {
   const queryClient = useMemo(
@@ -20,9 +21,13 @@ export default function App(props: AppProps) {
     <StoreContext.Provider value={store}>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          <KonstaApp theme="material" safeAreas={true}>
-            <props.Component {...props.pageProps} />
-          </KonstaApp>
+          <MantineProvider withGlobalStyles withNormalizeCSS theme={{}}>
+            <ModalsProvider>
+              <NotificationsProvider>
+                <props.Component {...props.pageProps} />
+              </NotificationsProvider>
+            </ModalsProvider>
+          </MantineProvider>
         </QueryClientProvider>
       </trpc.Provider>
     </StoreContext.Provider>

@@ -1,39 +1,62 @@
-import { Card, Preloader } from "konsta/react";
+import {
+  Card,
+  Container,
+  createStyles,
+  Loader,
+  MediaQuery,
+  Paper
+} from "@mantine/core";
 import Head from "next/head";
 import Link from "next/link";
+import { PropsWithChildren, ReactNode } from "react";
 
-export default function GuestLayout(props: {
-  children: JSX.Element | JSX.Element[];
-  header?: JSX.Element | JSX.Element[];
-  footer?: JSX.Element | JSX.Element[];
-  title?: string;
-  isLoading?: boolean;
-}) {
+const useStyles = createStyles((theme) => ({
+  authWrapper: {
+    position: "absolute",
+    inset: 0,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 4,
+    marginRight: 4
+  },
+  cardAuth: {
+    width: "100%",
+    margin: `${theme.spacing.sm}px`,
+    padding: 32,
+    [`@media (min-width: ${theme.breakpoints.sm}px)`]: {
+      width: 400
+    }
+  }
+}));
+
+export default function GuestLayout(
+  props: PropsWithChildren<{
+    children: ReactNode;
+    header?: JSX.Element | JSX.Element[];
+    footer?: JSX.Element | JSX.Element[];
+    title?: string;
+    isLoading?: boolean;
+  }>
+) {
+  const { classes } = useStyles();
   return (
     <>
       <Head>
         <title>{props.title || "Guest"}</title>
       </Head>
-      <div className="absolute inset-0 flex flex-col justify-center items-center mx-2">
-        <Card
-          className="w-full sm:w-[480px]"
-          header={!props.isLoading && props.header}
-          footer={!props.isLoading && props.footer}
-        >
+      <div className={classes.authWrapper}>
+        <Paper shadow={"xl"} className={classes.cardAuth}>
           {props.isLoading ? (
             <div className="flex items-center flex-col gap-4">
-              <Preloader />
+              <Loader />
               <p>Checking User</p>
             </div>
           ) : (
             props.children
           )}
-        </Card>
-        <div>
-          <Link href="/">
-            <a className="text-primary text-sm">Back to home</a>
-          </Link>
-        </div>
+        </Paper>
       </div>
     </>
   );
