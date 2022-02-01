@@ -5,44 +5,52 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { authRouterInputTokenSchema } from "@/libs/entity/auth/schema";
 import {
+  Anchor,
   Button,
+  Group,
   LoadingOverlay,
   PasswordInput,
-  Space,
   TextInput
 } from "@mantine/core";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { useNotifications } from "@mantine/notifications";
+import Link from "next/link";
 
 export default function PageLogin() {
-  const { signIn } = useAuth({
+  const { signIn, auth } = useAuth({
     middleware: "guest",
-    redirectIfAuthenticated: "/"
+    redirectTo: "/"
   });
+  const [isLoading, setIsLoading] = useState(false);
+
   const notif = useNotifications();
 
-  const { handleSubmit, control, setError } = useForm<
+  const { handleSubmit, control, setError, formState } = useForm<
     inferMutationInput<"auth.token">
   >({
     resolver: yupResolver(authRouterInputTokenSchema)
   });
 
   const onSubmit = (data: inferMutationInput<"auth.token">) => {
-    signIn(data).catch((e) => {
-      let v = e.data?.yupError;
-      if (v) {
-        setError(v.path, { message: v.errors.join(" ") });
-      } else {
-        notif.showNotification({
-          title: "Error!",
-          message: e.message,
-          color: "red"
-        });
-      }
-    });
+    setIsLoading(true);
+    signIn(data)
+      .catch((e) => {
+        let v = e.data?.yupError;
+        if (v) {
+          setError(v.path, { message: v.errors.join(" ") });
+        } else {
+          notif.showNotification({
+            title: "Error!",
+            message: e.message,
+            color: "red"
+          });
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
   return (
     <GuestLayout>
+      <LoadingOverlay visible={auth.isLoading || isLoading} />
       <form method="POST" action="" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
@@ -78,8 +86,12 @@ export default function PageLogin() {
             />
           )}
         />
-        <Space h={14} />
-        <Button type="submit">Login</Button>
+        <Group align={"center"} position={"apart"} mt={20}>
+          <Link href={"/register"}>
+            <Anchor component="a">Register</Anchor>
+          </Link>
+          <Button type="submit">Login</Button>
+        </Group>
       </form>
     </GuestLayout>
   );

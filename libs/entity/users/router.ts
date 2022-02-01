@@ -96,9 +96,7 @@ export const userRouter = createRouter()
   })
   .query("me", {
     async resolve({ ctx }) {
-      let currentUser = ctx.user.getUser();
-      if (!currentUser) throw new TRPCError({ code: "UNAUTHORIZED" });
-      return currentUser;
+      return ctx.user.getUser();
     }
   })
   .query("all", {

@@ -4,32 +4,12 @@ import {
   createStyles,
   Loader,
   MediaQuery,
-  Paper
+  Paper,
+  Box
 } from "@mantine/core";
 import Head from "next/head";
 import Link from "next/link";
 import { PropsWithChildren, ReactNode } from "react";
-
-const useStyles = createStyles((theme) => ({
-  authWrapper: {
-    position: "absolute",
-    inset: 0,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 4,
-    marginRight: 4
-  },
-  cardAuth: {
-    width: "100%",
-    margin: `${theme.spacing.sm}px`,
-    padding: 32,
-    [`@media (min-width: ${theme.breakpoints.sm}px)`]: {
-      width: 400
-    }
-  }
-}));
 
 export default function GuestLayout(
   props: PropsWithChildren<{
@@ -40,24 +20,37 @@ export default function GuestLayout(
     isLoading?: boolean;
   }>
 ) {
-  const { classes } = useStyles();
   return (
     <>
       <Head>
-        <title>{props.title || "Guest"}</title>
+        <title>{"Authentication"}</title>
       </Head>
-      <div className={classes.authWrapper}>
-        <Paper shadow={"xl"} className={classes.cardAuth}>
-          {props.isLoading ? (
-            <div className="flex items-center flex-col gap-4">
-              <Loader />
-              <p>Checking User</p>
-            </div>
-          ) : (
-            props.children
-          )}
+      <Box
+        sx={() => ({
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft: 4,
+          marginRight: 4
+        })}
+      >
+        <Paper
+          shadow={"xl"}
+          sx={(theme) => ({
+            width: "100%",
+            margin: `${theme.spacing.sm}px`,
+            padding: 32,
+            [theme.fn.largerThan("sm")]: {
+              width: 400
+            }
+          })}
+        >
+          {props.children}
         </Paper>
-      </div>
+      </Box>
     </>
   );
 }
