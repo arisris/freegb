@@ -15,8 +15,14 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { PropsWithChildren, ReactNode } from "react";
-import { AiOutlineBell, AiOutlineLogin, AiOutlineSetting, AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineBell,
+  AiOutlineLogin,
+  AiOutlineSetting,
+  AiOutlineUser
+} from "react-icons/ai";
 
 export default function HomeLayout(
   props: PropsWithChildren<{
@@ -28,6 +34,7 @@ export default function HomeLayout(
   }>
 ) {
   const scheme = useMantineColorScheme();
+  const router = useRouter();
   const {
     auth: { data: user }
   } = useAuth();
@@ -45,24 +52,34 @@ export default function HomeLayout(
       <Head>
         <title>{props.title || "Homepage"}</title>
       </Head>
-      <Paper component="nav" shadow={"xl"}>
+      <Paper
+        component="nav"
+        shadow={"sm"}
+        sx={{
+          minHeight: "48px",
+          display: "flex",
+          minWidth: "100%",
+          alignItems: "center"
+        }}
+      >
         <Container
           size="xl"
           sx={(theme) => ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: 5
+            width: "100%",
+            padding: 8
           })}
         >
           <Box>Logo</Box>
-          <Box>Forms</Box>
+          {/* <Box>Forms</Box> */}
           {user ? (
             <Group spacing={"md"} position="center">
               <Menu
                 control={
                   <ActionIcon size="md" variant="hover">
-                    <AiOutlineBell size={32} />
+                    <AiOutlineBell size={24} />
                   </ActionIcon>
                 }
                 transition={"skew-down"}
@@ -96,7 +113,7 @@ export default function HomeLayout(
                   </Button>
                 }
                 position="bottom"
-                placement="center"
+                placement="start"
                 withArrow
                 gutter={-5}
               >
@@ -105,10 +122,23 @@ export default function HomeLayout(
               </Menu>
             </Group>
           ) : (
-            <Group spacing={"xl"}>
-              <Link href="/login">
-                <Button component="a" size="sm" leftIcon={<AiOutlineLogin />}>Login</Button>
-              </Link>
+            <Group spacing={"md"}>
+              <Menu
+                control={
+                  <ActionIcon size="md" variant="hover">
+                    <AiOutlineLogin size={24} />
+                  </ActionIcon>
+                }
+                position="left"
+                withArrow
+              >
+                <Menu.Item onClick={() => router.push("/login")}>
+                  Login
+                </Menu.Item>
+                <Menu.Item onClick={() => router.push("/login")}>
+                  Register
+                </Menu.Item>
+              </Menu>
             </Group>
           )}
         </Container>
